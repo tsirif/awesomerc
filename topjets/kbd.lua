@@ -8,8 +8,7 @@ local base = require('topjets.base')
 local kbd = base()
 
 local layouts = {[0] = "EN",
-                 [1] = "UA",
-                 [2] = "RU"}
+                 [1] = "GR"}
 
 function kbd.init()
    dbus.request_name("session", "ru.gentoo.kbdd")

@@ -31,21 +31,23 @@ conv = utility.conversion
 
 -- Autorun programs
 local autorunApps = {
-   "setxkbmap -layout 'us,ua,ru' -variant ',winkeys,winkeys' -option grp:menu_toggle -option compose:ralt -option terminate:ctrl_alt_bksp",
+   -- "setxkbmap -layout 'us,gr' -variant 'winkeys,winkeys' -option grp:menu_toggle -option compose:ralt -option terminate:ctrl_alt_bksp",
+   "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle -option terminate:ctrl_alt_bksp",
    'sleep 2; xkbset m; xmodmap ~/.xmodmap'
 }
 
 local runOnceApps = {
-   'hexchat',
-   'mpd',
-   'xrdb -merge ~/.Xresources',
-   'mpdscribble',
+   -- 'hexchat',
+   -- 'mpd',
+   -- 'xrdb -merge ~/.Xresources',
+   -- 'mpdscribble',
    'kbdd',
-   '/usr/bin/avfsd -o intr -o sync_read ' .. userdir .. '/.avfs',
+   -- '/usr/bin/avfsd -o intr -o sync_read ' .. userdir .. '/.avfs',
+   -- 'xscreensaver -no-splash',
    'megasync',
-   'xscreensaver -no-splash',
-   'pulseaudio --start',
-   'redshift -l 60.8:10.7 -m vidmode -t 6500:5000',
+   -- 'pulseaudio --start',
+   'gnome-screensaver',
+   'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500'
 }
 
 utility.autorun(autorunApps, runOnceApps)
@@ -74,17 +76,18 @@ vista.setup {
 
 -- Wallpaper
 for s = 1, screen.count() do
-   gears.wallpaper.maximized(vista[s].wallpaper, s, true)
+   gears.wallpaper.maximized(vista[s].wallpaper, s, false)
+   -- gears.wallpaper.maximized(vista[s].wallpaper, s, true)
 end
 
 -- Default system software
-software = { terminal = "urxvt",
-             terminal_cmd = "urxvt -e ",
-             terminal_quake = "urxvt",
-             editor = "ec",
-             editor_cmd = "ec ",
-             browser = "chromium",
-             browser_cmd = "chromium " }
+software = { terminal = "terminator",
+             terminal_cmd = "terminator -e ",
+             terminal_quake = "terminator",
+             editor = "vim",
+             editor_cmd = "vim ",
+             browser = "firefox",
+             browser_cmd = "firefox " }
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts = {
@@ -148,7 +151,7 @@ globalkeys = utility.keymap(
    "M-d", function() utility.view_first_empty() end,
    "M-u", awful.client.urgent.jumpto,
    "M-i", function() vista.jump_cursor() end,
-   "M-Tab", function() awful.client.focus.history.previous() utility.refocus() end,
+   "M-S-Tab", function() awful.client.focus.history.previous() utility.refocus() end,
    "M-C-n", awful.client.restore,
    -- Application launching
    "XF86Launch1", function() utility.spawn_in_terminal("ncmpc") end,
@@ -159,7 +162,7 @@ globalkeys = utility.keymap(
    "Print", function() awful.util.spawn("snap " .. os.date("%Y%m%d_%H%M%S")) end,
    "M-Return", function ()
       quake.toggle({ terminal = software.terminal_quake,
-                     name = "URxvt",
+                     name = "Terminal",
                      height = 0.5,
                      skip_taskbar = true,
                      ontop = true })
@@ -184,13 +187,13 @@ globalkeys = utility.keymap(
          awful.util.getdir("cache") .. "/history_eval")
           end,
    -- Miscellaneous
-   "XF86ScreenSaver", cmd(userdir .. "/scripts/screenlock"),
+   "XF86ScreenSaver", cmd("gnome-screensaver-command -l"),
    "XF86MonBrightnessDown", cmd("xbacklight -" .. rc.xbacklight_step),
    "XF86MonBrightnessUp", cmd("xbacklight +" .. rc.xbacklight_step),
    "XF86AudioLowerVolume", function() statusbar[mouse.screen].widgets.vol:dec() end,
    "XF86AudioRaiseVolume", function() statusbar[mouse.screen].widgets.vol:inc() end,
    "XF86AudioMute", function() statusbar[mouse.screen].widgets.vol:mute() end,
-   rc.keys.lock, cmd("xscreensaver-command -lock"),
+   rc.keys.lock, cmd("gnome-screensaver-command -l"),
    "M-l", minitray.toggle,
    "M-space", function()
       awful.layout.inc(layouts, 1)

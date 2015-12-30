@@ -61,25 +61,30 @@ end
 -- End of herder module
 
 herder.setup {
-   { rule = { hostname = "heather" },
-     properties = { interfaces = { "wlan0" },
-                    laptop_name = "Thinkpad X220",
-                    hosts = { local_ip = "10.140.28.1",
-                              router_ip = "192.168.1.1" } } },
-   { rule = { hostname = "kaylee" },
-     properties = { configs = { "main", "macbook" },
-                    interfaces = { "wlp3s0" },
-                    laptop_name = "Macbook Pro 13\"",
-                    hosts = { local_ip = "62.244.14.21",
-                              router_ip = "192.168.2.1" },
-                    keys = { lock = "XF86PowerOff" },
-                    xbacklight_step = 5 } },
+   { rule = { hostname = "ArchLenovusI" },
+     properties = { interfaces = { "enp9s0", "wlp8s0" },
+                    laptop_name = "Lenovo Y50-70",
+                    hosts = { router_ip = "192.168.1.1" } } },
+   -- { rule = { hostname = "heather" },
+   --   properties = { interfaces = { "wlan0" },
+   --                  laptop_name = "Thinkpad X220",
+   --                  hosts = { local_ip = "10.140.28.1",
+   --                            router_ip = "192.168.1.1" } } },
+   -- { rule = { hostname = "kaylee" },
+   --   properties = { configs = { "main", "macbook" },
+   --                  interfaces = { "wlp3s0" },
+   --                  laptop_name = "Macbook Pro 13\"",
+   --                  hosts = { local_ip = "62.244.14.21",
+   --                            router_ip = "192.168.2.1" },
+   --                  keys = { lock = "XF86PowerOff" },
+   --                  xbacklight_step = 5 } },
    { rule = { env_flag = "dbg" },
      properties = { debugging = true } },
    { rule = { },
      properties = { configs = { "main" },
-                    keys = { lock = "XF86ScreenSaver" },
-                    xbacklight_step = 10 } }
+                    -- keys = { lock = "XF86ScreenSaver" },
+                    keys = { lock = "C-Alt-l" },
+                    xbacklight_step = 5 } }
 }
 
 rc = herder.current -- Export configuration as rc
