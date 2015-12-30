@@ -11,6 +11,7 @@ local base = require('topjets.base')
 local weather = base {
    cmd = "curl -s 'https://api.forecast.io/forecast/%s/%s,%s?units=si&exclude=minutely,hourly,alerts,flags'",
    lat = private.user.loc.lat, lon = private.user.loc.lon,
+   city = private.user.loc.city, country = private.user.loc.country,
    api_key = private.weather.api_key,
    days = 2,
    update_freq = 300,
@@ -90,7 +91,9 @@ end
 
 function weather.update_tooltip()
    local data = weather.data
-   tooltip.title = forecast_line(data.currently, true)
+   local title = weather.city .. "\t" .. weather.country .. "\n"
+   title = title .. forecast_line(data.currently, true)
+   tooltip.title = title
    tooltip.icon = condition(data.currently.icon).icon.large
 
    local text = ""
@@ -99,7 +102,7 @@ function weather.update_tooltip()
       if i < weather.days + 1 then
          text = text .. "\n"
       end
-   end
+    end
 
    local _, rise, set = lustrous.get_time()
    local len = (set - rise) / 60
