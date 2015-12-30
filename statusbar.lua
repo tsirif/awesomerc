@@ -85,8 +85,10 @@ function statusbar.initialize(bar, s, options)
    -- Clock
    widgets.time = topjets.clock(options.width)
    widgets.time:buttons(
-      keymap("LMB", function() awful.util.spawn(software.browser_cmd ..
-                                                "calendar.google.com", false) end,
+      keymap(
+             -- "LMB", function() awful.util.spawn(software.browser_cmd ..
+             --                                    "calendar.google.com", false) end,
+             "LMB", function() utility.run_once("gnome-calendar", 1) end,
              "MMB", function() topjets.clock.calendar.switch_month(0) end,
              "WHEELUP", function() topjets.clock.calendar.switch_month(-1) end,
              "WHEELDOWN", function() topjets.clock.calendar.switch_month(1) end))
@@ -101,10 +103,12 @@ function statusbar.initialize(bar, s, options)
 
    -- Memory widget
    widgets.mem = topjets.memory()
+   widgets.mem:buttons(keymap("LMB", function() utility.run_once("gnome-system-monitor", 1) end))
 
    -- Battery widget
    widgets.battery = topjets.battery()
-   widgets.battery:buttons(keymap("LMB", terminal_with("sudo powertop")))
+   -- widgets.battery:buttons(keymap("LMB", terminal_with("sudo powertop")))
+   widgets.battery:buttons(keymap("LMB", function() utility.run_once("gnome-power-statistics", 1) end))
 
    -- Network widget
    widgets.net = topjets.network(is_vertical)
