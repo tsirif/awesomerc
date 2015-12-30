@@ -13,14 +13,29 @@ local short_labels = { "", "!DNS: ", "L: ", "R: " }
 local labels = { "World", "W/o DNS", "Local", "Router" }
 local tooltip = { title = "Network\t\tLatency\t\tLoss" }
 
-local icon_names = { wired = "network-transmit-receive",
-                     wireless = "network-wireless-signal-excellent",
-                     disconnected = "network-offline" }
+local icon_names = { wired = {connected = "network-transmit-receive"},
+                     wireless = {connected = "network-wireless-connected"},
+                     cellular = {
+                       connected = {}
+                       -- input 3g, 4g, E connections
+                     },
+                     none = {connected = "network-offline"}}
 local icons = {}
 
 function network.init()
-   for k, v in pairs(icon_names) do
-      icons[k] = base.icon(v, "status")
+  for k, v in pairs(icon_names) do
+    icons[k] = {}
+    if k ~= "cellular" then
+      icons[k]["connected"] = base.icon(v.connected, "status")
+    else
+      icons[k]["connected"] = {}
+      -- input 3g, 4g, E connection icon lookups
+    end
+  end
+   for _, t in pairs({"wireless", "cellular"}) do
+     for i, level in ipairs({ "weak", "ok", "good", "excellent" }) do
+       icons[t][i] = base.icon("network-" .. t .."-signal-" .. level, "status")
+     end
    end
 
    system.network.interfaces = rc.interfaces or { "eth0", "wlan0" }
@@ -32,7 +47,7 @@ function network.init()
 end
 
 function network.new(is_v)
-   local network_icon = wibox.widget.imagebox(icons.disconnected.large)
+   local network_icon = wibox.widget.imagebox(icons.none.connected.large)
    local network_text = wibox.widget.textbox()
 
    local _widget =
@@ -49,9 +64,14 @@ function network.new(is_v)
    return _widget
 end
 
-function network.refresh(w, iface_type, data)
+function network.refresh(w, iface_type, strength, data)
    if iface_type ~= nil then
-      w.network_icon:set_image(icons[iface_type].large)
+      if iface_type == "wireless" or iface_type == "cellular" then
+        local idx = math.floor(math.min(math.max(strength * 100, 0), 99) / 25) + 1
+        w.network_icon:set_image(icons[iface_type][idx].large)
+      else
+        w.network_icon:set_image(icons[iface_type].connected.large)
+      end
       if iface_type == "none" then
          w.network_text:set_markup("")
       end
@@ -90,14 +110,16 @@ function network.tooltip()
    return tooltip
 end
 
-function network.connection_callback(_, iface_type)
-   tooltip.icon = icons[iface_type].large
-   network.refresh_all(iface_type, nil)
+function network.connection_callback(_, iface_type, strength)
+   if iface_type ~= "cellular" then
+      tooltip.icon = icons[iface_type].connected.large
+   end
+   network.refresh_all(iface_type, strength, nil)
 end
 
 function network.latency_callback(data)
    network.update_tooltip(data)
-   network.refresh_all(nil, data)
+   network.refresh_all(nil, nil, data)
 end
 
 return network

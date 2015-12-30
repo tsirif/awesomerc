@@ -19,6 +19,8 @@ local last_iface_connected = nil
 
 local iproute_command = "ip addr show %s 2> /dev/null"
 local ping_command = "ping -c %d -w %d -q %s"
+local signal_command = "iwconfig %s"
+local traffic_command = "ip -s link show %s 2> /dev/null"
 
 function system.network.add_latency_callback (fn)
    table.insert(callbacks.latency, fn)
@@ -70,7 +72,7 @@ local function ping_callback(f, host)
    check_complete()
 end
 
-local function get_iface_type (iface)
+local function get_iface_type(iface)
    if not iface then
       return "none"
    elseif iface:match("wl.+") then
@@ -88,7 +90,7 @@ local function reping_network()
    end
 end
 
-local function check_connected ()
+local function check_connected()
    local count = 0
    for _ in pairs(interface_connected) do count = count + 1 end
 
@@ -106,8 +108,16 @@ local function check_connected ()
 
    local type = get_iface_type(connected_iface)
 
+   local strength = nil
+   if type == "wireless" or type == "cellular" then
+     local f = io.popen(signal_command:format(connected_iface))
+     local a, b = f:read("*all"):match("Link Quality=(%d+)/(%d+)")
+     strength = tonumber(a) / tonumber(b)
+     f:close()
+   end
+
    for _, callback in ipairs(callbacks.connection) do
-      callback(connected_iface, type)
+      callback(connected_iface, type, strength)
    end
 
    if last_iface_connected ~= connected_iface then
