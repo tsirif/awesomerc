@@ -13,9 +13,7 @@ function volume.init()
    end
    icons.muted = base.icon("audio-volume-muted", "status")
 
-   scheduler.register_recurring("topjets_volume", 20, function()
-                                   volume.update(io.popen("amixer get Master"))
-   end)
+   scheduler.register_recurring("topjets_volume", 20, function() volume.update() end)
 end
 
 function volume.new()
@@ -26,19 +24,22 @@ function volume.new()
    return w
 end
 
-local function get_master_infos(f)
+local function get_master_infos()
    local state, vol
-   for line in f:lines() do
-      if string.match(line, "%s%[%d+%%%]%s") ~= nil then
-         vol = string.match(line, "%s%[%d+%%%]%s")
-         vol = string.gsub(vol, "[%[%]%%%s]","")
-      end
-      if string.match(line, "%s%[[%l]+%]$") then
-         state = string.match(line, "%s%[[%l]+%]$")
-         state = string.gsub(state,"[%[%]%%%s]","")
-      end
+
+   local fvol = io.popen("pamixer --get-volume")
+   vol = string.match(fvol:lines()(), "%d+")
+   fvol:close()
+
+   local fstate = io.popen("pamixer --get-mute")
+   state = fstate:lines()()
+   fstate:close()
+   if state == "false" then
+     state = "on"
+   else
+     state = "muted"
    end
-   f:close()
+
    return state, vol
 end
 
@@ -50,12 +51,12 @@ function volume.notify(state, vol, icon)
                     icon = icon.large, replaces_id = volume.notification_id}).id
 end
 
-function volume.update(f, to_notify)
-   local state, vol = get_master_infos(f)
+function volume.update(to_notify)
+   local state, vol = get_master_infos()
    local idx = math.floor(math.min(math.max(tonumber(vol), 0), 99) / 25) + 1
    local naughty_icon
 
-   if state == "off" then
+   if state == "muted" then
       volume.refresh_all(icons.muted)
       naughty_icon = icons.muted
    else
@@ -73,15 +74,18 @@ function volume.refresh(w, icon)
 end
 
 function volume.inc()
-   volume.update(io.popen("amixer set Master 5%+"), true)
+  os.execute("pamixer --increase 5")
+  volume.update(true)
 end
 
 function volume.dec()
-   volume.update(io.popen("amixer set Master 5%-"), true)
+  os.execute("pamixer --decrease 5")
+  volume.update(true)
 end
 
 function volume.mute()
-   volume.update(io.popen("amixer set Master toggle"), true)
+  os.execute("pamixer --toggle-mute")
+  volume.update(true)
 end
 
 return volume
