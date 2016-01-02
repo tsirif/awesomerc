@@ -91,7 +91,7 @@ function network.refresh(w, iface_type, strength, downrate, uprate, data)
        ui = ui + 1
        u = uprate / 1024^ui
      end
-     w.network_text:set_markup(string.format("%.1f %s/\n%.1f %s",
+     w.network_text:set_markup(string.format("%.1f %s\n%.1f %s",
                                              d, units[di+1],
                                              u, units[ui+1]))
    end
