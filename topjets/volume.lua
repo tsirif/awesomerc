@@ -1,6 +1,7 @@
 local wibox = require('wibox')
 local scheduler = require('scheduler')
 local naughty = require('naughty')
+local utility = require("utility")
 local base = require('topjets.base')
 
 local volume = base()
@@ -27,13 +28,8 @@ end
 local function get_master_infos()
    local state, vol
 
-   local fvol = io.popen("pamixer --get-volume")
-   vol = string.match(fvol:lines()(), "%d+")
-   fvol:close()
-
-   local fstate = io.popen("pamixer --get-mute")
-   state = fstate:lines()()
-   fstate:close()
+   vol = utility.pslurp("pamixer --get-volume", "*line")
+   state = utility.pslurp("pamixer --get-mute", "*line")
    if state == "false" then
      state = "on"
    else
@@ -73,13 +69,13 @@ function volume.refresh(w, icon)
    w:set_image(icon.small)
 end
 
-function volume.inc()
-  os.execute("pamixer --increase 5")
+function volume.inc(volume_step)
+  os.execute("pamixer --increase " .. volume_step)
   volume.update(true)
 end
 
-function volume.dec()
-  os.execute("pamixer --decrease 5")
+function volume.dec(volume_step)
+  os.execute("pamixer --decrease " .. volume_step)
   volume.update(true)
 end
 
