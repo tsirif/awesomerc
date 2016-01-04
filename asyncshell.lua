@@ -39,6 +39,24 @@ function asyncshell.request(command, callback)
    return id
 end
 
+-- Sends an asynchronous request for an output of the shell command (interactive
+-- commands).
+-- @param command Command to be executed and taken output from
+-- @param callback Function to be called when the command finishes
+-- @return Request ID
+function asyncshell.request_with_shell(command, callback)
+   local id = next_id()
+   local tmpfname = asyncshell.file_template .. id
+   asyncshell.request_table[id] = {callback = callback}
+   local req =
+      string.format("bash -c '%s > %s; " ..
+                    'echo "asyncshell.deliver(%s)" | ' ..
+                    "awesome-client' 2> /dev/null",
+                    string.gsub(command, "'", "'\\''"), tmpfname, id, tmpfname)
+   awful.util.spawn_with_shell(req, false)
+   return id
+end
+
 -- Calls the remembered callback function on the output of the shell
 -- command.
 -- @param id Request ID
