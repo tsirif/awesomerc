@@ -7,6 +7,7 @@ return {
    cpu = require('topjets.cpu'),
    memory = require('topjets.memory'),
    volume = require('topjets.volume'),
+   brightness = require('topjets.brightness'),
    network = require('topjets.network'),
    battery = require('topjets.battery'),
    weather = require('topjets.weather'),

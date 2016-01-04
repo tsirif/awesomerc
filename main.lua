@@ -31,7 +31,6 @@ conv = utility.conversion
 
 -- Autorun programs
 local autorunApps = {
-   -- "setxkbmap -layout 'us,gr' -variant 'winkeys,winkeys' -option grp:menu_toggle -option compose:ralt -option terminate:ctrl_alt_bksp",
    "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle -option terminate:ctrl_alt_bksp",
    'sleep 2; xkbset m; xmodmap ~/.xmodmap'
 }
@@ -70,10 +69,12 @@ vista.setup {
    { rule = { ratio = "1.25-" },
      properties = { wallpaper = beautiful.wallpapers[2],
                     statusbar = { position = "top", width = vista.scale(38),
-                                  unitybar_thin_mode = true } } },
+                                  unitybar_thin_mode = true,
+                                  volume_step = rc.volume_step } } },
    { rule = {},
      properties = { wallpaper = beautiful.wallpapers[1],
-                    statusbar = { position = "right", width = vista.scale(58) } } } }
+                    statusbar = { position = "right", width = vista.scale(58),
+                                  volume_step = rc.volume_step } } } }
 
 -- Wallpaper
 for s = 1, screen.count() do
@@ -213,12 +214,11 @@ globalkeys = utility.keymap(
           end,
    -- Miscellaneous
    "XF86ScreenSaver", cmd("gnome-screensaver-command -l"),
-   -- TODO Add naughtyfications
-   "XF86MonBrightnessDown", cmd("xbacklight -" .. rc.xbacklight_step),
-   "XF86MonBrightnessUp", cmd("xbacklight +" .. rc.xbacklight_step),
-   "XF86AudioLowerVolume", function() statusbar[mouse.screen].widgets.vol:dec() end,
-   "XF86AudioRaiseVolume", function() statusbar[mouse.screen].widgets.vol:inc() end,
-   "XF86AudioMute", function() statusbar[mouse.screen].widgets.vol:mute() end,
+   "XF86MonBrightnessDown", function() statusbar[mouse.screen].widgets.brightness.dec(rc.xbacklight_step) end,
+   "XF86MonBrightnessUp", function() statusbar[mouse.screen].widgets.brightness.inc(rc.xbacklight_step) end,
+   "XF86AudioLowerVolume", function() statusbar[mouse.screen].widgets.vol.dec(rc.volume_step) end,
+   "XF86AudioRaiseVolume", function() statusbar[mouse.screen].widgets.vol.inc(rc.volume_step) end,
+   "XF86AudioMute", function() statusbar[mouse.screen].widgets.vol.mute() end,
    rc.keys.lock, cmd("gnome-screensaver-command -l"),
    "M-l", minitray.toggle,
    "M-space", function()

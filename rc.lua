@@ -82,9 +82,9 @@ herder.setup {
      properties = { debugging = true } },
    { rule = { },
      properties = { configs = { "main" },
-                    -- keys = { lock = "XF86ScreenSaver" },
                     keys = { lock = "M-C-l" },
-                    xbacklight_step = 5 } }
+                    xbacklight_step = 5,
+                    volume_step = 5} }
 }
 
 rc = herder.current -- Export configuration as rc
