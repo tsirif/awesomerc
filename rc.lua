@@ -83,7 +83,7 @@ herder.setup {
    { rule = { },
      properties = { configs = { "main" },
                     -- keys = { lock = "XF86ScreenSaver" },
-                    keys = { lock = "C-Alt-l" },
+                    keys = { lock = "M-C-l" },
                     xbacklight_step = 5 } }
 }
 
