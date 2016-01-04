@@ -47,7 +47,8 @@ local runOnceApps = {
    'megasync',
    -- 'pulseaudio --start',
    'gnome-screensaver',
-   'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500'
+   'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500',
+   'nm-applet'
 }
 
 utility.autorun(autorunApps, runOnceApps)
@@ -120,20 +121,28 @@ menubar.app_folders = { "/usr/share/applications/",
 menubar.show_categories = false
 
 -- Interact with snap script
+local screenshot_save = "/home/tsirif/Pictures/Screenshots"
+local scrot_prefix = "Screenshot_from_"
+
 function snap(filename)
-   naughty.notify { title = "Screenshot captured: " .. filename:match(".+/(.+)"),
+  local time = filename:match(scrot_prefix .. "(.+).png")
+  if time == nil then
+    return
+  end
+  local pathname = screenshot_save .. "/" .. filename
+   naughty.notify { title = "Screenshot captured: " .. time,
                     text = "Left click to upload",
                     timeout = 10,
                     icon_size = 200,
-                    icon = filename,
+                    icon = pathname,
                     run = function(notif)
-                       asyncshell.request("imgurbash " .. filename,
+                       asyncshell.request("imgurbash " .. pathname,
                                           function(f)
                                              local t = utility.slurp(f, "*line")
-                                             os.execute("echo " .. t .. " | xclip")
+                                             os.execute("echo " .. t .. " | xclip -selection clipboard")
                                              naughty.notify { title = "Image uploaded",
                                                               text = t }
-                       end )
+                                          end)
                        naughty.destroy(notif)
    end }
 end
@@ -148,6 +157,8 @@ globalkeys = utility.keymap(
    "M-Down", function() awful.client.focus.byidx(-1) utility.refocus() end,
    "M-j", function() awful.client.focus.byidx(1) utility.refocus() end,
    "M-k", function() awful.client.focus.byidx(-1) utility.refocus() end,
+   "M-S-j", function () awful.client.swap.byidx(1) end,
+   "M-S-k", function () awful.client.swap.byidx(-1) end,
    "M-d", function() utility.view_first_empty() end,
    "M-u", awful.client.urgent.jumpto,
    "M-i", function() vista.jump_cursor() end,
@@ -159,7 +170,21 @@ globalkeys = utility.keymap(
    "XF86LaunchB", smartmenu.show,
    "M-p", function() menubar.show() end,
    "M-=", dict.lookup_word,
-   "Print", function() awful.util.spawn("snap " .. os.date("%Y%m%d_%H%M%S")) end,
+   "Print", function()
+     local t = utility.pslurp("scrot '" .. scrot_prefix .. "%F_%T.png' -q 98 -e 'mv $f " .. screenshot_save .. " && echo $f'", "*line")
+     snap(t)
+   end,
+   "M-Print", function()
+     asyncshell.request_with_shell("sleep 0.5 && scrot '" .. scrot_prefix .. "%F_%T.png' -s -q 98 -e 'mv $f " .. screenshot_save .. " && echo $f'",
+                                  function(f)
+                                    local t = utility.slurp(f, "*line")
+                                    snap(t)
+                                  end)
+   end,
+   "M-C-Print", function()
+     local t = utility.pslurp("scrot '" .. scrot_prefix .. "%F_%T.png' -u -q 98 -e 'mv $f " .. screenshot_save .. " && echo $f'", "*line")
+     snap(t)
+   end,
    "M-Return", function ()
       quake.toggle({ terminal = software.terminal_quake,
                      name = "Terminal",
@@ -188,6 +213,7 @@ globalkeys = utility.keymap(
           end,
    -- Miscellaneous
    "XF86ScreenSaver", cmd("gnome-screensaver-command -l"),
+   -- TODO Add naughtyfications
    "XF86MonBrightnessDown", cmd("xbacklight -" .. rc.xbacklight_step),
    "XF86MonBrightnessUp", cmd("xbacklight +" .. rc.xbacklight_step),
    "XF86AudioLowerVolume", function() statusbar[mouse.screen].widgets.vol:dec() end,
@@ -202,7 +228,9 @@ globalkeys = utility.keymap(
               end,
    "M-b", function()
       statusbar[mouse.screen].wibox.visible = not statusbar[mouse.screen].wibox.visible
-          end
+          end,
+    "M-C-r", awesome.restart,
+    "M-C-q", awesome.quit
 )
 
 clientkeys = utility.keymap(
