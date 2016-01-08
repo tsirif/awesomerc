@@ -47,7 +47,8 @@ local runOnceApps = {
    -- 'pulseaudio --start',
    'gnome-screensaver',
    'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500',
-   'nm-applet'
+   'nm-applet',
+   'compton -b --backend glx'
 }
 
 utility.autorun(autorunApps, runOnceApps)
@@ -171,6 +172,8 @@ globalkeys = utility.keymap(
    "XF86LaunchB", smartmenu.show,
    "M-p", function() menubar.show() end,
    "M-=", dict.lookup_word,
+   "M-S-t", function() awful.util.spawn(software.browser_cmd .. "https://translate.google.com", false) end,
+   "M-g", function() awful.util.spawn(software.browser_cmd .. "https://google.com", false) end,
    "Print", function()
      local t = utility.pslurp("scrot '" .. scrot_prefix .. "%F_%T.png' -q 98 -e 'mv $f " .. screenshot_save .. " && echo $f'", "*line")
      snap(t)
@@ -186,10 +189,13 @@ globalkeys = utility.keymap(
      local t = utility.pslurp("scrot '" .. scrot_prefix .. "%F_%T.png' -u -q 98 -e 'mv $f " .. screenshot_save .. " && echo $f'", "*line")
      snap(t)
    end,
-   "M-Return", function ()
+   "M-`", function ()
       quake.toggle({ terminal = software.terminal_quake,
-                     name = "Terminal",
-                     height = 0.5,
+                     name = "QuakeTerminal",
+                     height = 1.0,
+                     width = 0.38,
+                     vert = "top",
+                     horiz = "left",
                      skip_taskbar = true,
                      ontop = true })
                end,
@@ -315,5 +321,7 @@ client.connect_signal("manage",
                             end
                          end
 end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 scheduler.start()

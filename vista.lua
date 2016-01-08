@@ -258,7 +258,7 @@ function vista.scale(dimension, allow_float)
    if allow_float then
       return scaled
    else
-      return math.floor(scaled)
+      return tonumber(math.floor(scaled + 0.5))
    end
 end
 

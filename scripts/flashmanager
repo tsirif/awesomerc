@@ -1,7 +1,7 @@
 #!/usr/bin/lua
 
-local root = "/home/unlogic/.media/"
-local symlink = "/home/unlogic/flash"
+local root = "/home/tsirif/.media/"
+local symlink = "/home/tsirif/flash"
 
 function get_mounted_devices()
    f = io.popen('findmnt -l | grep -v /dev/sda | grep /dev/sd')
