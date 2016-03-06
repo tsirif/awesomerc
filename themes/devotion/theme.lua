@@ -10,8 +10,10 @@ end
 theme.name = "Devotion 2.0"
 theme.theme_dir = util.getdir("config") .. "/themes/devotion"
 
-theme.wallpapers = { res("wallpapers/winter-frame-16x10.jpg"),
-                     res("wallpapers/winter-frame.jpg") }
+-- theme.wallpapers = { res("wallpapers/winter-frame-16x10.jpg"),
+--                      res("wallpapers/winter-frame.jpg") }
+theme.wallpapers = { res("wallpapers/Forever_by_Shady_S.jpg"),
+                     res("wallpapers/Forever_by_Shady_S.jpg") }
 theme.icon_dir      = res("icons")
 
 theme.font          = "sans " .. vista.scale(9)

@@ -56,7 +56,7 @@ end
 function mount(dev)
    local mntdir = root .. dev.uuid
    os.execute("mkdir -p '" .. mntdir .. "'")
-   os.execute("mount -o umask=0,uid=unlogic /dev/" .. dev.name .. " " .. mntdir)
+   os.execute("mount -o umask=0,uid=tsirif /dev/" .. dev.name .. " " .. mntdir)
    os.execute("rm -f " .. symlink)
    os.execute("ln -s " .. mntdir .. " " .. symlink)
 end

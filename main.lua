@@ -29,30 +29,6 @@ calc = utility.calc
 money = currencies.recalc
 conv = utility.conversion
 
--- Autorun programs
-local autorunApps = {
-   "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle -option terminate:ctrl_alt_bksp",
-   'sleep 2; xkbset m; xmodmap ~/.xmodmap'
-}
-
-local runOnceApps = {
-   -- 'hexchat',
-   -- 'mpd',
-   -- 'xrdb -merge ~/.Xresources',
-   -- 'mpdscribble',
-   'kbdd',
-   -- '/usr/bin/avfsd -o intr -o sync_read ' .. userdir .. '/.avfs',
-   -- 'xscreensaver -no-splash',
-   'megasync',
-   -- 'pulseaudio --start',
-   'gnome-screensaver',
-   'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500',
-   'nm-applet',
-   'compton -b --backend glx'
-}
-
-utility.autorun(autorunApps, runOnceApps)
-
 -- Theme initialization
 lustrous.init(private.user.loc)
 utility.load_theme("devotion")
@@ -235,8 +211,29 @@ globalkeys = utility.keymap(
    "M-b", function()
       statusbar[mouse.screen].wibox.visible = not statusbar[mouse.screen].wibox.visible
           end,
-    "M-C-r", awesome.restart,
-    "M-C-q", awesome.quit
+   "M-C-r", awesome.restart,
+   "M-S-C-q", function()
+      os.execute("shutdown -c")
+      os.execute("shutdown -h +1")
+      naughty.notify { title = "System shutting down in 1 minute",
+                        text = "click to shutdown now",
+                        timeout = 10,
+                        run = function(notif)
+                          os.execute("shutdown -c")
+                          os.execute("shutdown -h now")
+                        end }
+   end,
+   "M-S-C-r", function()
+      os.execute("shutdown -c")
+      os.execute("shutdown -r +1")
+      naughty.notify { title = "System restarting in 1 minute",
+                        text = "click to restart now",
+                        timeout = 10,
+                        run = function(notif)
+                          os.execute("shutdown -c")
+                          os.execute("shutdown -r now")
+                        end }
+                      end
 )
 
 clientkeys = utility.keymap(
@@ -325,3 +322,27 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 scheduler.start()
+
+-- Autorun programs
+local autorunApps = {
+   "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle -option terminate:ctrl_alt_bksp",
+   'sleep 2; xkbset m; xmodmap ~/.xmodmap'
+}
+
+local runOnceApps = {
+   -- 'hexchat',
+   -- 'mpd',
+   -- 'xrdb -merge ~/.Xresources',
+   -- 'mpdscribble',
+   'kbdd',
+   -- '/usr/bin/avfsd -o intr -o sync_read ' .. userdir .. '/.avfs',
+   'megasync',
+   -- 'pulseaudio --start',
+   'gnome-screensaver',
+   'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500',
+   'nm-applet',
+   'compton -b --backend glx',
+   'thermald',
+}
+
+utility.autorun(autorunApps, runOnceApps)
