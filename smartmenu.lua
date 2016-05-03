@@ -1,6 +1,7 @@
 local menu = require('awful.menu')
 local util = require('awful.util')
 local utility = require('utility')
+local vista = require('vista')
 
 local smartmenu = {}
 local scripts_dir = util.getdir("config") .. "/scripts/"
@@ -24,15 +25,16 @@ local function flashmanager()
    end
 end
 
+local mainmenu = { items = {
+                      { '&awesome', { { "restart", awesome.restart },
+                                      { "quit", awesome.quit } } },
+                      { '&flashmanager', flashmanager },
+                      { '&music', function() utility.spawn_in_terminal("ncmpc") end },
+                      { '&display', vista.xrandr.menu } },
+                  theme = { width = vista.scale(150) } }
+local m = menu(mainmenu)
+
 function smartmenu.show()
-   local mainmenu = { items = {
-                         { '&awesome', { { "restart", awesome.restart },
-                                         { "quit", awesome.quit } } },
-                         { '&flashmanager', flashmanager() },
-                         { '&music', function() utility.spawn_in_terminal("ncmpc") end },
-                         { '&display', vista.xrandr.menu() } },
-                      theme = { width = vista.scale(150) } }
-   local m = menu(mainmenu)
    m:show()
 end
 

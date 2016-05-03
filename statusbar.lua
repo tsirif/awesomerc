@@ -108,7 +108,7 @@ function statusbar.initialize(bar, s, options)
 
    -- Battery widget
    widgets.battery = topjets.battery()
-   widgets.battery:buttons(keymap("LMB", function() utility.run_once("gnome-power-statistics", 1) end))
+   widgets.battery:buttons(keymap("LMB", terminal_with("sudo powertop")))
 
    -- Network widget
    widgets.net = topjets.network(is_vertical)
@@ -122,6 +122,7 @@ function statusbar.initialize(bar, s, options)
    widgets.vol = topjets.volume()
    widgets.vol:buttons(
       keymap("LMB", function() widgets.vol.mute() end,
+             "RMB", function() utility.run_once("qpaeq") end,
              "WHEELUP", function() widgets.vol.inc(volume_step) end,
              "WHEELDOWN", function() widgets.vol.dec(volume_step) end))
 

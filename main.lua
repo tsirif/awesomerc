@@ -326,23 +326,26 @@ scheduler.start()
 -- Autorun programs
 local autorunApps = {
    "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle -option terminate:ctrl_alt_bksp",
-   'sleep 2; xkbset m; xmodmap ~/.xmodmap'
+   'sleep 2; xkbset m; xmodmap ~/.xmodmap',
+   'megasync',
+   'cutegram',
 }
 
 local runOnceApps = {
-   -- 'hexchat',
    -- 'mpd',
    -- 'xrdb -merge ~/.Xresources',
    -- 'mpdscribble',
    'kbdd',
    -- '/usr/bin/avfsd -o intr -o sync_read ' .. userdir .. '/.avfs',
-   'megasync',
    -- 'pulseaudio --start',
    'gnome-screensaver',
    'redshift -l 40.6335:22.9437 -m vidmode -t 6500:5500',
    'nm-applet',
    'compton -b --backend glx',
    'thermald',
+   'firefox',
+   'thunderbird',
+   'terminator',
 }
 
 utility.autorun(autorunApps, runOnceApps)

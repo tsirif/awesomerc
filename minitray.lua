@@ -7,7 +7,7 @@ local wibox = require("wibox")
 -- Module minitray
 local minitray = { geometry = {} }
 
-local function show(first_time)
+function minitray.show(first_time)
    local scrgeom = screen[mouse.screen].workarea
    minitray.wibox.height = minitray.geometry.height or vista.scale(20)
    local items = awesome.systray()
@@ -19,18 +19,18 @@ local function show(first_time)
    minitray.wibox.visible = true
 end
 
-local function init()
+function minitray.init()
    minitray.wibox = wibox({})
    minitray.wibox.ontop = true
    minitray.layout = wibox.layout.align.horizontal()
    minitray.tray = wibox.widget.systray()
    minitray.layout:set_right(minitray.tray)
    minitray.wibox:set_widget(minitray.layout)
-   show(true)
-   hide()
+   minitray.show(true)
+   minitray.hide()
 end
 
-local function hide()
+function minitray.hide()
    minitray.wibox.visible = false
 end
 
@@ -40,14 +40,16 @@ function minitray.toggle(geometry)
    end
 
    if not minitray.wibox then
-      init()
+      minitray.init()
    end
 
    if minitray.wibox.visible then
-      hide()
+      minitray.hide()
    else
-      show()
+      minitray.show()
    end
 end
+
+minitray.init()
 
 return minitray

@@ -32,4 +32,13 @@ function kbd.refresh(w, layout)
    w.kbd_text:set_markup(layouts[layout])
 end
 
+function kbd.toggle(w)
+  -- fetch current tag's lang layout and update it
+  -- call dbus kbdd service to change lang layout for current tag
+end
+
+function kbd.show(w)
+  -- on hover show available languages
+end
+
 return kbd
