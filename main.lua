@@ -61,7 +61,7 @@ end
 
 -- Default system software
 software = { terminal = "terminator",
-             terminal_cmd = "terminator -e ",
+             terminal_cmd = "terminator -x ",
              terminal_quake = "terminator",
              editor = "vim",
              editor_cmd = "vim ",
@@ -114,10 +114,10 @@ function snap(filename)
                     icon_size = 200,
                     icon = pathname,
                     run = function(notif)
-                       asyncshell.request("imgurbash " .. pathname,
+                       asyncshell.request("imgurbash2 " .. pathname,
                                           function(f)
                                              local t = utility.slurp(f, "*line")
-                                             os.execute("echo " .. t .. " | xclip -selection clipboard")
+                                             -- os.execute("echo " .. t .. " | xclip -selection clipboard")
                                              naughty.notify { title = "Image uploaded",
                                                               text = t }
                                           end)

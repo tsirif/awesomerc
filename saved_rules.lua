@@ -13,7 +13,7 @@ return
       tag = 2 },
     rule = { class = "Chromium" } },
   { properties = { screen = "primary",
-      tag = 2 },
+      tag = 3 },
     rule = { class = "Thunderbird" } },
   { properties = { screen = "primary",
       tag = 3 },
@@ -72,4 +72,7 @@ return
     rule = { class = "MATLAB R2015" } },
   { properties = { screen = "primary",
       tag = 3 },
-    rule = { class = "ViberPC" } } }
+    rule = { class = "ViberPC" } },
+  { properties = { screen = "primary",
+      tag = 4 },
+    rule = { class = "Baobab" } } }
